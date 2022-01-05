@@ -36,6 +36,7 @@ func main() {
 
 	// readOfficialJson()
 	// xmlUrl("official_name.json", "official_url.json")
+	// download("official_url.json")
 }
 
 //根据链接文件下载icon
