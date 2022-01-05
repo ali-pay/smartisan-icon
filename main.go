@@ -22,27 +22,20 @@ import (
 
 func main() {
 	// dir := `C:\Users\ali-pay\Downloads\Compressed\Snowboard-IconPack-for-Smartisan-OS-master\IconBundles`
-	// fileNameJson := "file_name.json"
-	// fileUrlJson := "file_url.json"
-	// fileName(dir, fileNameJson)
-	// fileUrl(fileNameJson, fileUrlJson)
-	// download(fileUrlJson)
+	// fileName(dir, "file_name.json")
+	// fileUrl("file_name.json", "file_url.json")
+	// download("file_url.json")
 
-	//xmlFiles := []string{
-	//	"assets/com.sorcerer.sorcery.iconpack-4.6.7994-7994-22320-appfilter.xml",
-	//	"assets/me.morirain.dev.iconpack.pure-7.91-1920091604-150901-appfilter.xml",
-	//}
-	//xmlNameJson := "xml_name.json"
-	//xmlUrlJson := "xml_url.json"
-	//xmlName(xmlFiles, xmlNameJson)
-	//xmlUrl(xmlNameJson, xmlUrlJson)
-	download("official_url1.json")
-	download("official_url2.json")
-	download("official_url3.json")
+	// xmlFiles := []string{
+	// 	"assets/com.sorcerer.sorcery.iconpack-4.6.7994-7994-22320-appfilter.xml",
+	// 	"assets/me.morirain.dev.iconpack.pure-7.91-1920091604-150901-appfilter.xml",
+	// }
+	// xmlName(xmlFiles, "xml_name.json")
+	// xmlUrl("xml_name.json", "xml_url.json")
+	// download("xml_url.json")
 
-	//readOfficialJson()
-	//
-	//xmlUrl("official_name3.json", "official_url3.json")
+	// readOfficialJson()
+	// xmlUrl("official_name.json", "official_url.json")
 }
 
 //根据链接文件下载icon

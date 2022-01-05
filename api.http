@@ -7,9 +7,23 @@ POST http://setting.smartisan.com/app/icon/ HTTP/1.1
 
 [{"package":"com.tencent.qqmusic"}]
 
-#http://icon.smartisan.com/info/com.tencent.qqmusic/icon_provided_by_smartisan.xml
-#http://icon.smartisan.com/drawable/com.tencent.qqmusic/icon_provided_by_smartisan.png
-### 
-POST {{baseUrl}} HTTP/1.1
-{{json}}
-
+# {
+#   "body": {
+#     "app_icon": {
+#       "com.tencent.qqmusic": [
+#         {
+#           "logo": "http://icon.smartisan.com/drawable/com.tencent.qqmusic/com.tencent.qqmusic.png",
+#           "md5": "http://icon.smartisan.com/info/com.tencent.qqmusic/com.tencent.qqmusic.xml"
+#         },
+#         {
+#           "logo": "http://icon.smartisan.com/drawable/com.tencent.qqmusic/z_com.tencent.qqmusic.png",
+#           "md5": "http://icon.smartisan.com/info/com.tencent.qqmusic/z_com.tencent.qqmusic.xml"
+#         }
+#       ]
+#     }
+#   },
+#   "head": {
+#     "code": 0,
+#     "message": ""
+#   }
+# }
