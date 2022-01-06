@@ -16,6 +16,7 @@
       v-if="showUrls"
       background
       @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
       :current-page.sync="currentPage"
       :page-sizes="[12, 24, 48, 96, 999]"
       :page-size="pageSize"
@@ -59,6 +60,14 @@ export default {
   methods: {
     handleSizeChange(val) {
       this.pageSize = val
+    },
+    handleCurrentChange() {
+      // 滚动到页面顶部
+      let top = document.documentElement.scrollTop || document.body.scrollTop
+      let timer = setInterval(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = top -= 50
+        if (top <= 0) clearInterval(timer)
+      }, 10)
     },
     findUrl(index) {
       return this.showUrls[index + (this.currentPage - 1) * this.pageSize]
