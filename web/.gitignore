@@ -21,9 +21,3 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-/file_url
-/official_url
-/xml_url
-package-lock.json
-yarn.lock
