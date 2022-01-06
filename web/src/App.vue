@@ -47,7 +47,7 @@ export default {
         return
       }
       this.debounce(() => {
-        this.showUrls = this.iconUrls.filter(item => item.indexOf(name) !== -1)
+        this.showUrls = this.iconUrls.filter(item => item.indexOf(name, 35) !== -1)
       })
     }
   },
