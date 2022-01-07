@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import iconUrls from './assets/official_url.json'
+import iconUrls from '../../downloader/icon_url.json'
 export default {
   name: 'App',
   data() {
