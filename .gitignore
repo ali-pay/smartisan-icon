@@ -25,5 +25,9 @@ pnpm-debug.log*
 /file_url
 /official_url
 /xml_url
+/icon_url
 package-lock.json
 yarn.lock
+*.zip
+*.7z
+*.exe

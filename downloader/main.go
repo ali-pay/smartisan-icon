@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"sort"
 	"strings"
 	"time"
 
@@ -21,22 +22,52 @@ import (
 //{"body":{"app_icon":{"com.tencent.weishi":[{"logo":"http://icon.smartisan.com/drawable/com.tencent.weishi/com.tencent.weishi.png","md5":"http://icon.smartisan.com/info/com.tencent.weishi/com.tencent.weishi.xml"},{"logo":"http://icon.smartisan.com/drawable/com.tencent.weishi/ic_launcher.png","md5":"http://icon.smartisan.com/info/com.tencent.weishi/ic_launcher.xml"}],"me.ele":[{"logo":"http://icon.smartisan.com/drawable/me.ele/icon.png","md5":"http://icon.smartisan.com/info/me.ele/icon.xml"}]}},"head":{"code":0,"message":""}}
 
 func main() {
-	// dir := `C:\Users\ali-pay\Downloads\Compressed\Snowboard-IconPack-for-Smartisan-OS-master\IconBundles`
-	// fileName(dir, "file_name.json")
-	// fileUrl("file_name.json", "file_url.json")
-	// download("file_url.json")
+	//dir := `C:\Users\ali-pay\Downloads\Compressed\Snowboard-IconPack-for-Smartisan-OS-master\IconBundles`
+	//fileName(dir, "file_name.json")
+	//fileUrl("file_name.json", "file_url.json")
+	//download("file_url.json")
 
-	// xmlFiles := []string{
-	// 	"assets/com.sorcerer.sorcery.iconpack-4.6.7994-7994-22320-appfilter.xml",
-	// 	"assets/me.morirain.dev.iconpack.pure-7.91-1920091604-150901-appfilter.xml",
-	// }
-	// xmlName(xmlFiles, "xml_name.json")
-	// xmlUrl("xml_name.json", "xml_url.json")
-	// download("xml_url.json")
+	//xmlFiles := []string{
+	//	"assets/com.sorcerer.sorcery.iconpack-4.6.7994-7994-22320-appfilter.xml",
+	//	"assets/me.morirain.dev.iconpack.pure-7.91-1920091604-150901-appfilter.xml",
+	//}
+	//xmlName(xmlFiles, "xml_name.json")
+	//xmlUrl("xml_name.json", "xml_url.json")
+	//download("xml_url.json")
 
-	// readOfficialJson()
-	// xmlUrl("official_name.json", "official_url.json")
-	// download("official_url.json")
+	//readOfficialJson()
+	//xmlUrl("official_name.json", "official_url.json")
+	//download("official_url.json")
+
+	//uniq("icon_name.json")
+	// xmlUrl("icon_name.json", "icon_url.json")
+	download("icon_url.json")
+}
+
+//去除name.json文件的重复数据
+func uniq(nameJson string) {
+	//读取文件
+	file, err := ioutil.ReadFile(nameJson)
+	if err != nil {
+		panic(err)
+	}
+	names := make([]string, 0)
+	json.Unmarshal(file, &names)
+	//去重
+	list := make(map[string]bool)
+	for _, v := range names {
+		list[v] = false
+	}
+	//转为数组
+	data := make([]string, 0, len(list))
+	for key := range list {
+		data = append(data, key)
+	}
+	//排序
+	sort.StringSlice(data).Sort()
+	//写入文件
+	j, _ := json.MarshalIndent(data, "", "\t")
+	ioutil.WriteFile(nameJson, j, os.ModeAppend)
 }
 
 //根据链接文件下载icon
@@ -59,10 +90,10 @@ func download(urlJson string) {
 	for i, url := range urls {
 		name := strings.ReplaceAll(url, "http://icon.smartisan.com/drawable/", "")
 		name = strings.ReplaceAll(name, "/icon_provided_by_smartisan", "")
-		// name = strings.ReplaceAll(name, "/launcher_icon", "")
-		// name = strings.ReplaceAll(name, "/ic_launcher", "")
-		// name = strings.ReplaceAll(name, "/icon", "")
-		// name = strings.ReplaceAll(name, "/logo", "")
+		//name = strings.ReplaceAll(name, "/launcher_icon", "")
+		//name = strings.ReplaceAll(name, "/ic_launcher", "")
+		//name = strings.ReplaceAll(name, "/icon", "")
+		//name = strings.ReplaceAll(name, "/logo", "")
 		name = strings.ReplaceAll(name, "/", ".")
 		err := downloadFile(url, dir+"/"+name)
 		if err != nil {
@@ -110,10 +141,18 @@ func xmlName(files []string, output string) {
 	ioutil.WriteFile(output, j, os.ModeAppend)
 }
 
+type Pgk struct {
+	Package string `json:"package"`
+}
+
 //根据包名列表文件，构建出链接列表文件
 //input: 包名文件的名称
 //output: 链接文件的名称
 func xmlUrl(input, output string) {
+	//写入url.json文件的icon链接
+	data := make([]string, 0)
+
+	//读取name.json文件
 	file, err := ioutil.ReadFile(input)
 	if err != nil {
 		panic(err)
@@ -121,29 +160,38 @@ func xmlUrl(input, output string) {
 	pkg := strings.ReplaceAll(string(file), "\t\"", "\t{\"package\":\"")
 	pkg = strings.ReplaceAll(pkg, "\",", "\"},")
 	pkg = strings.ReplaceAll(pkg, "\n]", "}\n]")
-	//fmt.Println(pkg)
-	req, _ := http.NewRequest(
-		"POST",
-		"http://setting.smartisan.com/app/icon/",
-		bytes.NewBuffer([]byte(pkg)))
-	req.Header.Add("content-type", "application/json")
-	defer req.Body.Close()
-	client := &http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	result, _ := ioutil.ReadAll(resp.Body)
-	//fmt.Println(string(result))
-	data := make([]string, 0)
-	apps := gjson.GetBytes(result, "body.app_icon").Map()
-	for _, app := range apps {
-		for _, logo := range app.Get("#.logo").Array() {
-			data = append(data, logo.String())
+	pkgs := make([]Pgk, 0)
+	json.Unmarshal([]byte(pkg), &pkgs)
+
+	//每次获取10000条
+	for start := 0; start < len(pkgs); start += 9999 {
+		end := start + 9999
+		if end >= len(pkgs) {
+			end = len(pkgs) - 1
+		}
+		body, _ := json.Marshal(pkgs[start:end])
+		req, _ := http.NewRequest(
+			"POST",
+			"http://setting.smartisan.com/app/icon/",
+			bytes.NewBuffer(body))
+		req.Header.Add("content-type", "application/json")
+		defer req.Body.Close()
+		client := &http.Client{Timeout: 10 * time.Second}
+		resp, err := client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+		defer resp.Body.Close()
+		result, _ := ioutil.ReadAll(resp.Body)
+		apps := gjson.GetBytes(result, "body.app_icon").Map()
+		for _, app := range apps {
+			for _, logo := range app.Get("#.logo").Array() {
+				data = append(data, logo.String())
+			}
 		}
 	}
-	//fmt.Println(data)
+
+	//写入url.json文件
 	j, _ := json.MarshalIndent(data, "", "\t")
 	ioutil.WriteFile(output, j, os.ModeAppend)
 }
