@@ -87,7 +87,7 @@ export default {
         let url = canvas.toDataURL('image/png')
         let a = document.createElement('a')
         let event = new MouseEvent('click')
-        a.download = name || 'photo'
+        a.download = name + '.png'
         a.href = url
         a.dispatchEvent(event)
       }
