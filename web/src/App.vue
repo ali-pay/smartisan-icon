@@ -1,19 +1,19 @@
 <template>
-  <div id="app" class="wrap">
+  <div id="app" class="wrap" v-if="showUrls">
+    <el-backtop></el-backtop>
     <el-input clearable placeholder="请输入内容" v-model="inputName">
       <el-button slot="append" icon="el-icon-search">查找</el-button>
     </el-input>
-    <el-row :gutter="20" v-if="showUrls">
-      <el-col :span="6" v-for="(o, index) in pageSize" :key="index">
+    <el-row>
+      <el-col :span="6" v-for="(_, index) in pageSize" :key="index">
         <el-card shadow="hover" :body-style="{ padding: '0px' }" v-if="findUrl(index)">
-          <el-image lazy :src="findUrl(index)"></el-image>
+          <el-image lazy :src="findUrl(index)" :preview-src-list="showUrls"></el-image>
           <span class="name">{{ findName(findUrl(index)) }}</span>
           <span class="download" @click="downloadImage(findUrl(index), findName(findUrl(index)))"><i class="el-icon-download"></i></span>
         </el-card>
       </el-col>
     </el-row>
     <el-pagination
-      v-if="showUrls"
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -24,6 +24,7 @@
       layout="total, sizes, prev, pager, next, jumper"
     >
     </el-pagination>
+    <el-link href="https://beian.miit.gov.cn/" target="_blank">粤ICP备2021162019号-1</el-link>
   </div>
 </template>
 
@@ -106,6 +107,7 @@ export default {
 <style>
 html {
   background: #fafafb;
+  text-align: center;
 }
 .wrap {
   width: 1220px;
@@ -136,7 +138,7 @@ html {
   width: 252px;
   height: 278px;
   border-radius: 8px;
-  margin: 20px 0;
+  margin: 20px auto;
 }
 .el-card:hover .name {
   display: none;
@@ -156,6 +158,6 @@ html {
   box-shadow: 1px 1px 10px 2px #ccc !important;
 }
 .el-input {
-  width: 401px;
+  width: 50%;
 }
 </style>
